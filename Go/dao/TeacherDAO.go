@@ -29,6 +29,22 @@ func GetTeacherList(db *sql.DB) ([]dto.Teacher, error) {
 	return listRecords, nil
 }
 
+func GetTeacher(db *sql.DB, teacherID int) (*dto.Teacher, error) {
+	teacher := &dto.Teacher{}
+
+	err := db.QueryRow(
+		`SELECT * FROM teacher WHERE teacherID = ?`,
+		teacherID,
+	).Scan(&teacher.ID, &teacher.FirstName, &teacher.LastName, &teacher.Title, &teacher.Office, &teacher.Department)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return teacher, nil
+
+}
+
 func CreateTeacherRecord(db *sql.DB, teacher *dto.Teacher) error {
 
 	_, err := db.Query(
@@ -48,6 +64,22 @@ func CreateTeacherRecord(db *sql.DB, teacher *dto.Teacher) error {
 }
 
 func UpdateTeacherRecord(db *sql.DB, teacher *dto.Teacher) error {
+
+	_, err := db.Query(
+		`UPDATE teacher
+		SET firstName = ?, lastName = ?, title = ?, office = ?, department = ?
+		WHERE teacherID = ?`,
+		teacher.FirstName,
+		teacher.LastName,
+		teacher.Title,
+		teacher.Office,
+		teacher.Department,
+		teacher.ID,
+	)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

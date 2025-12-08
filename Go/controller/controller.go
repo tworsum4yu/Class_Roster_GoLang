@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"myapp/dao"
 	"myapp/dto"
+	"myapp/service"
 	"myapp/ui"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -20,12 +21,14 @@ func Run(db *sql.DB) {
 		case 1:
 			listRecords(db)
 		case 2:
-			createRecords(db)
+			getIndividualRecord(db)
 		case 3:
-			viewRecords(db)
+			createRecords(db)
 		case 4:
-			removeRecords(db)
+			updateRecords(db)
 		case 5:
+			removeRecords(db)
+		case 6:
 			return
 		default:
 			ui.PrintInvalidInput()
@@ -81,6 +84,55 @@ func listRecords(db *sql.DB) {
 	// fmt.Println("List")
 }
 
+func getIndividualRecord(db *sql.DB) {
+	option := ui.GetListOption()
+
+	switch option {
+	case 1:
+
+		id := ui.GetID("Enter the id to find: ")
+
+		student, err := dao.GetStudent(db, id)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		ui.PrintStudent(*student)
+
+	case 2:
+
+		id := ui.GetID("Enter the id to find: ")
+
+		teacher, err := dao.GetTeacher(db, id)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		ui.PrintTeacher(*teacher)
+
+	case 3:
+
+		id := ui.GetID("Enter the id to find: ")
+
+		course, err := dao.GetCourse(db, id)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		ui.PrintCourse(*course)
+
+	default:
+		ui.PrintInvalidInput()
+	}
+
+}
+
 func createRecords(db *sql.DB) {
 	option := ui.GetListOption()
 
@@ -121,8 +173,75 @@ func createRecords(db *sql.DB) {
 	}
 }
 
-func viewRecords(db *sql.DB) {
-	fmt.Println("View")
+func updateRecords(db *sql.DB) {
+	option := ui.GetListOption()
+
+	switch option {
+	case 1:
+
+		id := ui.GetID("Enter the id to update: ")
+
+		newStudent := &dto.Student{}
+		newStudent.ID = id
+
+		currentStudent, err := dao.GetStudent(db, id)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		newStudent.FirstName, newStudent.LastName = ui.GetStudentInfo()
+
+		if err := dao.UpdateStudentRecord(db, service.UpdateStudentRecordFix(currentStudent, newStudent)); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+	case 2:
+
+		id := ui.GetID("Enter the id to update: ")
+
+		newTeacher := &dto.Teacher{}
+		newTeacher.ID = id
+
+		currentTeacher, err := dao.GetTeacher(db, id)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		newTeacher.FirstName, newTeacher.LastName, newTeacher.Title, newTeacher.Office, newTeacher.Department = ui.GetTeacherInfo()
+
+		if err := dao.UpdateTeacherRecord(db, service.UpdateTeacherRecordFix(currentTeacher, newTeacher)); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+	case 3:
+
+		id := ui.GetID("Enter the id to update: ")
+
+		newCourse := &dto.Course{}
+		newCourse.ID = id
+
+		currentCourse, err := dao.GetCourse(db, id)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		newCourse.Name = ui.GetCourseInfo()
+
+		if err := dao.UpdateCourseRecord(db, service.UpdatCourseRecordFix(currentCourse, newCourse)); err != nil {
+			fmt.Println(err)
+			return
+		}
+	default:
+		ui.PrintInvalidInput()
+	}
 }
 
 func removeRecords(db *sql.DB) {
@@ -131,7 +250,7 @@ func removeRecords(db *sql.DB) {
 	switch option {
 	case 1:
 
-		id := ui.GetRemoveID()
+		id := ui.GetID("Enter the id to remove: ")
 
 		if err := dao.DeleteStudentRecord(db, id); err != nil {
 			fmt.Println(err)
@@ -140,7 +259,7 @@ func removeRecords(db *sql.DB) {
 
 	case 2:
 
-		id := ui.GetRemoveID()
+		id := ui.GetID("Enter the id to remove: ")
 
 		if err := dao.DeleteTeacherRecord(db, id); err != nil {
 			fmt.Println(err)
@@ -149,7 +268,7 @@ func removeRecords(db *sql.DB) {
 
 	case 3:
 
-		id := ui.GetRemoveID()
+		id := ui.GetID("Enter the id to remove: ")
 
 		if err := dao.DeleteCourseRecord(db, id); err != nil {
 			fmt.Println(err)

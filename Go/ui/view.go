@@ -11,10 +11,11 @@ func GetMenuOption() int {
 
 	fmt.Println("Main Menu")
 	fmt.Println("1. List Records")
-	fmt.Println("2. Create New Record")
-	fmt.Println("3. View a Record")
-	fmt.Println("4. Remove a Record")
-	fmt.Println("5. Exit")
+	fmt.Println("2. Find individual record")
+	fmt.Println("3. Create New Record")
+	fmt.Println("4. Update a Record")
+	fmt.Println("5. Remove a Record")
+	fmt.Println("6. Exit")
 
 	fmt.Scanln(&userInput)
 
@@ -86,10 +87,10 @@ func GetCourseInfo() string {
 	return name
 }
 
-func GetRemoveID() int {
+func GetID(statement string) int {
 
 	var userInput int
-	fmt.Println("Enter the ID to remove: ")
+	fmt.Println(statement)
 
 	fmt.Scanln(&userInput)
 	return userInput

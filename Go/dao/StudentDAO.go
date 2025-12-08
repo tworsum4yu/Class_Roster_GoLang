@@ -29,6 +29,22 @@ func GetStudentList(db *sql.DB) ([]dto.Student, error) {
 	return listRecords, nil
 }
 
+func GetStudent(db *sql.DB, studentID int) (*dto.Student, error) {
+	student := &dto.Student{}
+
+	err := db.QueryRow(
+		`SELECT * FROM student WHERE studentID = ?`,
+		studentID,
+	).Scan(&student.ID, &student.FirstName, &student.LastName)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return student, nil
+
+}
+
 func CreateStudentRecord(db *sql.DB, student *dto.Student) error {
 
 	_, err := db.Query(
@@ -45,6 +61,19 @@ func CreateStudentRecord(db *sql.DB, student *dto.Student) error {
 }
 
 func UpdateStudentRecord(db *sql.DB, student *dto.Student) error {
+
+	_, err := db.Query(
+		`UPDATE student
+		SET firstName = ?, lastName = ?
+		WHERE studentID = ?`,
+		student.FirstName,
+		student.LastName,
+		student.ID,
+	)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }

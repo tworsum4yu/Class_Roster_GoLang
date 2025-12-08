@@ -29,6 +29,22 @@ func GetCourseList(db *sql.DB) ([]dto.Course, error) {
 	return listRecords, nil
 }
 
+func GetCourse(db *sql.DB, courseID int) (*dto.Course, error) {
+	course := &dto.Course{}
+
+	err := db.QueryRow(
+		`SELECT * FROM course WHERE courseID = ?`,
+		courseID,
+	).Scan(&course.ID, &course.Name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return course, nil
+
+}
+
 func CreateCourseRecord(db *sql.DB, course *dto.Course) error {
 
 	_, err := db.Query(
@@ -44,6 +60,18 @@ func CreateCourseRecord(db *sql.DB, course *dto.Course) error {
 }
 
 func UpdateCourseRecord(db *sql.DB, course *dto.Course) error {
+
+	_, err := db.Query(
+		`UPDATE course
+		SET courseName = ?
+		WHERE courseID = ?`,
+		course.Name,
+		course.ID,
+	)
+
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
