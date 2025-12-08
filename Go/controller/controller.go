@@ -126,5 +126,37 @@ func viewRecords(db *sql.DB) {
 }
 
 func removeRecords(db *sql.DB) {
-	fmt.Println("Remove")
+	option := ui.GetListOption()
+
+	switch option {
+	case 1:
+
+		id := ui.GetRemoveID()
+
+		if err := dao.DeleteStudentRecord(db, id); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+	case 2:
+
+		id := ui.GetRemoveID()
+
+		if err := dao.DeleteTeacherRecord(db, id); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+	case 3:
+
+		id := ui.GetRemoveID()
+
+		if err := dao.DeleteCourseRecord(db, id); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+	default:
+		ui.PrintInvalidInput()
+	}
 }

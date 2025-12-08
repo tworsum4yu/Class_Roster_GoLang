@@ -42,3 +42,22 @@ func CreateCourseRecord(db *sql.DB, course *dto.Course) error {
 
 	return nil
 }
+
+func UpdateCourseRecord(db *sql.DB, course *dto.Course) error {
+
+	return nil
+}
+
+func DeleteCourseRecord(db *sql.DB, courseID int) error {
+
+	_, err := db.Query(
+		`DELETE FROM course WHERE courseID = ?`,
+		courseID,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

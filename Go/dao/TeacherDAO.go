@@ -46,3 +46,22 @@ func CreateTeacherRecord(db *sql.DB, teacher *dto.Teacher) error {
 
 	return nil
 }
+
+func UpdateTeacherRecord(db *sql.DB, teacher *dto.Teacher) error {
+
+	return nil
+}
+
+func DeleteTeacherRecord(db *sql.DB, teacherID int) error {
+
+	_, err := db.Query(
+		`DELETE FROM teacher WHERE teacherID = ?`,
+		teacherID,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

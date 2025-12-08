@@ -86,6 +86,16 @@ func GetCourseInfo() string {
 	return name
 }
 
+func GetRemoveID() int {
+
+	var userInput int
+	fmt.Println("Enter the ID to remove: ")
+
+	fmt.Scanln(&userInput)
+	return userInput
+
+}
+
 func PrintStudent(student dto.Student) {
 	fmt.Printf("Student:\n  ID: %d\n  First Name: %s\n  Last Name: %s\n\n",
 		student.ID, student.FirstName, student.LastName)
