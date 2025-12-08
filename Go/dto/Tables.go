@@ -21,14 +21,14 @@ type Course struct {
 }
 
 type StudentCourse struct {
-	Student  Student
-	Course   Course
-	Semester string
-	Grade    string
+	StudentID int
+	CourseID  int
+	Semester  string
+	Grade     string
 }
 
 type TeacherCourse struct {
-	Teacher  Teacher
-	Course   Course
-	Semester string
+	TeacherID int
+	CourseID  int
+	Semester  string
 }

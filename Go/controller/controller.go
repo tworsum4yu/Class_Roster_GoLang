@@ -3,6 +3,8 @@ package controller
 import (
 	"database/sql"
 	"fmt"
+	"myapp/dao"
+	"myapp/dto"
 	"myapp/ui"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -23,8 +25,10 @@ func Run(db *sql.DB) {
 			viewRecords(db)
 		case 4:
 			removeRecords(db)
-		default:
+		case 5:
 			return
+		default:
+			ui.PrintInvalidInput()
 		}
 
 	}
@@ -32,11 +36,89 @@ func Run(db *sql.DB) {
 }
 
 func listRecords(db *sql.DB) {
-	fmt.Println("List")
+
+	option := ui.GetListOption()
+
+	switch option {
+	case 1:
+		students, err := dao.GetStudentList(db)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		for _, student := range students {
+			ui.PrintStudent(student)
+		}
+
+	case 2:
+		teachers, err := dao.GetTeacherList(db)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		for _, teacher := range teachers {
+			ui.PrintTeacher(teacher)
+		}
+	case 3:
+		courses, err := dao.GetCourseList(db)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		for _, course := range courses {
+			ui.PrintCourse(course)
+		}
+	default:
+		ui.PrintInvalidInput()
+	}
+
+	// fmt.Println("List")
 }
 
 func createRecords(db *sql.DB) {
-	fmt.Println("Create")
+	option := ui.GetListOption()
+
+	switch option {
+	case 1:
+
+		student := &dto.Student{}
+
+		student.FirstName, student.LastName = ui.GetStudentInfo()
+
+		if err := dao.CreateStudentRecord(db, student); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+	case 2:
+		teacher := &dto.Teacher{}
+
+		teacher.FirstName, teacher.LastName, teacher.Title, teacher.Office, teacher.Department = ui.GetTeacherInfo()
+
+		if err := dao.CreateTeacherRecord(db, teacher); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+	case 3:
+		course := &dto.Course{}
+
+		course.Name = ui.GetCourseInfo()
+
+		if err := dao.CreateCourseRecord(db, course); err != nil {
+			fmt.Println(err)
+			return
+		}
+
+	default:
+		ui.PrintInvalidInput()
+	}
 }
 
 func viewRecords(db *sql.DB) {
